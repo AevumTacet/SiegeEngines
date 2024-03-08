@@ -106,7 +106,7 @@ public class Config {
 
 		controlDistance = config.getInt("ControlDistance");
 		rotateDistance = config.getInt("RotateDistance");
-		arrowDamageToggle = config.getBoolean("DealArrowDamage");
+		arrowDamageToggle = config.getBoolean("DisableArrowDamage");
 		maxSiegeEnginesControlled = config.getInt("MaxSiegeEnginesControlled");
 		doDebug = config.getBoolean("Debug");
 		autoReload = config.getBoolean("AutoReload");
