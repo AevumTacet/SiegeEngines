@@ -26,6 +26,8 @@ import com.github.alathra.siegeengines.projectile.ProjectileType;
 import com.github.alathra.siegeengines.projectile.SiegeEngineProjectile;
 import com.github.alathra.siegeengines.util.SiegeEnginesUtil;
 
+import io.th0rgal.oraxen.api.OraxenItems;
+
 @SuppressWarnings("deprecation")
 public class Config {
 
@@ -256,6 +258,37 @@ public class Config {
 		}
 	}
 
+	private static ItemStack getAmmoItem(String ammoType)
+	{
+		if (ammoType.isEmpty() || ammoType == null)
+		{
+			return null;
+		}
+		boolean has_prefix = ammoType.contains(":");
+		if (has_prefix)
+		{
+			String[] splits = ammoType.split(":");
+			if (splits.length == 2)
+			{
+				String code = splits[0];
+				String id = splits[1];
+					
+				if (code.equalsIgnoreCase("ox"))
+				{
+					ItemStack customItem = OraxenItems.getItemById(id).build();
+					return customItem;
+				}
+				// else if (code.equalsIgnoreCase("ia"))
+				// {
+				// 	// Logic for ItemsAdder
+				// }
+			}
+		}
+		// By default, search in minecraft IDs
+		ItemStack item = new ItemStack(Material.getMaterial(ammoType));
+		return item;
+	}
+
 	private static void loadProjectilesConfig() {
 		projectileMap.clear();
 
@@ -272,73 +305,90 @@ public class Config {
 			}
 
 			try {
+
+				String ammoID = config.getString("Projectiles." + projectileName + ".AmmoItem");
+				ItemStack ammoItem = getAmmoItem(ammoID);
+
 				switch (projectileType) {
-				case EXPLOSIVE:
-					ExplosiveProjectile explosiveProjectile = new ExplosiveProjectile(new ItemStack(
-							Material.getMaterial(config.getString("Projectiles." + projectileName + ".AmmoItem"))));
-					explosiveProjectile.explodePower = (float) config
-							.getDouble("Projectiles." + projectileName + ".ExplodePower");
-					explosiveProjectile.inaccuracy = (float) config
-							.getDouble("Projectiles." + projectileName + ".Inaccuracy");
-					explosiveProjectile.projectilesCount = config
-							.getInt("Projectiles." + projectileName + ".ProjectileCount");
-					explosiveProjectile.soundType = Sound
-							.valueOf(config.getString("Projectiles." + projectileName + ".FireSound"));
-					explosiveProjectile.velocityFactor = (float) config
-							.getDouble("Projectiles." + projectileName + ".VelocityFactor");
-					projectileMap.put(projectileName, explosiveProjectile);
-					break;
-				case ENTITY:
-					EntityProjectile entityProjectile = new EntityProjectile(new ItemStack(
-							Material.getMaterial(config.getString("Projectiles." + projectileName + ".AmmoItem"))));
-					entityProjectile.inaccuracy = (float) config
-							.getDouble("Projectiles." + projectileName + ".Inaccuracy");
-					entityProjectile.projectileCount = config.getInt("Projectiles." + projectileName + ".ProjectileCount");
-					entityProjectile.entityType = EntityType
-							.valueOf(config.getString("Projectiles." + projectileName + ".EntityType"));
-					entityProjectile.soundType = Sound
-							.valueOf(config.getString("Projectiles." + projectileName + ".FireSound"));
-					entityProjectile.velocityFactor = (float) config
-							.getDouble("Projectiles." + projectileName + ".VelocityFactor");
-					if (entityProjectile.entityType.equals(EntityType.ARROW)) {
-						entityProjectile.arrowDamageFactor = (float) config
-								.getDouble("Projectiles." + projectileName + ".ArrowDamageFactor");
-					}
-					projectileMap.put(projectileName, entityProjectile);
-					break;
-				case FIREWORK:
-					FireworkProjectile fireworkProjectile = new FireworkProjectile(SiegeEnginesUtil.DEFAULT_ROCKET);
-					fireworkProjectile.inaccuracy = (float) config
-							.getDouble("Projectiles." + projectileName + ".Inaccuracy");
-					fireworkProjectile.projectileCount = config.getInt("Projectiles." + projectileName + ".ProjectileCount");
-					fireworkProjectile.delayTime = config.getInt("Projectiles." + projectileName + ".ProjectileCount");
-					if (fireworkProjectile.delayTime <= 0) {
-						fireworkProjectile.delayedFire = false;
-					} else {
-						fireworkProjectile.delayedFire = true;
-					}
-					fireworkProjectile.velocityFactor = (float) config
-							.getDouble("Projectiles." + projectileName + ".VelocityFactor");
-					projectileMap.put(projectileName, fireworkProjectile);
-					break;
-				case POTION:
-					PotionProjectile potionProjectile = new PotionProjectile(new ItemStack(
-							Material.getMaterial(config.getString("Projectiles." + projectileName + ".AmmoItem"))));
-					potionProjectile.inaccuracy = (float) config
-							.getDouble("Projectiles." + projectileName + ".Inaccuracy");
-					potionProjectile.projectileCount = config.getInt("Projectiles." + projectileName + ".ProjectileCount");
-					potionProjectile.delayTime = config.getInt("Projectiles." + projectileName + ".ProjectileCount");
-					if (potionProjectile.delayTime <= 0) {
-						potionProjectile.delayedFire = false;
-					} else {
-						potionProjectile.delayedFire = true;
-					}
-					potionProjectile.velocityFactor = (float) config
-							.getDouble("Projectiles." + projectileName + ".VelocityFactor");
-					projectileMap.put(projectileName, potionProjectile);
-					break;
-				default:
-					continue;
+
+					case EXPLOSIVE:
+						ExplosiveProjectile explosiveProjectile = new ExplosiveProjectile(ammoItem);
+
+						explosiveProjectile.explodePower = (float) config
+								.getDouble("Projectiles." + projectileName + ".ExplodePower");
+						explosiveProjectile.inaccuracy = (float) config
+								.getDouble("Projectiles." + projectileName + ".Inaccuracy");
+						explosiveProjectile.projectilesCount = config
+								.getInt("Projectiles." + projectileName + ".ProjectileCount");
+						explosiveProjectile.soundType = Sound
+								.valueOf(config.getString("Projectiles." + projectileName + ".FireSound"));
+						explosiveProjectile.velocityFactor = (float) config
+								.getDouble("Projectiles." + projectileName + ".VelocityFactor");
+						projectileMap.put(projectileName, explosiveProjectile);
+						break;
+
+					case ENTITY:
+						EntityProjectile entityProjectile = new EntityProjectile(ammoItem);
+
+						entityProjectile.inaccuracy = (float) config
+								.getDouble("Projectiles." + projectileName + ".Inaccuracy");
+						entityProjectile.projectileCount = config
+								.getInt("Projectiles." + projectileName + ".ProjectileCount");
+						entityProjectile.entityType = EntityType
+								.valueOf(config.getString("Projectiles." + projectileName + ".EntityType"));
+						entityProjectile.soundType = Sound
+								.valueOf(config.getString("Projectiles." + projectileName + ".FireSound"));
+						entityProjectile.velocityFactor = (float) config
+								.getDouble("Projectiles." + projectileName + ".VelocityFactor");
+
+						if (entityProjectile.entityType.equals(EntityType.ARROW)) {
+							entityProjectile.arrowDamageFactor = (float) config
+									.getDouble("Projectiles." + projectileName + ".ArrowDamageFactor");
+						}
+						projectileMap.put(projectileName, entityProjectile);
+						break;
+
+					case FIREWORK:
+						if (ammoItem == null) {
+							ammoItem = SiegeEnginesUtil.DEFAULT_ROCKET;
+						}
+						FireworkProjectile fireworkProjectile = new FireworkProjectile(ammoItem);
+						fireworkProjectile.inaccuracy = (float) config
+								.getDouble("Projectiles." + projectileName + ".Inaccuracy");
+						fireworkProjectile.projectileCount = config
+								.getInt("Projectiles." + projectileName + ".ProjectileCount");
+						fireworkProjectile.delayTime = config
+								.getInt("Projectiles." + projectileName + ".ProjectileCount");
+						if (fireworkProjectile.delayTime <= 0) {
+							fireworkProjectile.delayedFire = false;
+						} else {
+							fireworkProjectile.delayedFire = true;
+						}
+						fireworkProjectile.velocityFactor = (float) config
+								.getDouble("Projectiles." + projectileName + ".VelocityFactor");
+						projectileMap.put(projectileName, fireworkProjectile);
+						break;
+					case POTION:
+						PotionProjectile potionProjectile = new PotionProjectile(ammoItem);
+						potionProjectile.inaccuracy = (float) config
+								.getDouble("Projectiles." + projectileName + ".Inaccuracy");
+						potionProjectile.projectileCount = config
+								.getInt("Projectiles." + projectileName + ".ProjectileCount");
+						potionProjectile.delayTime = config
+								.getInt("Projectiles." + projectileName + ".ProjectileCount");
+
+						if (potionProjectile.delayTime <= 0) {
+							potionProjectile.delayedFire = false;
+						} else {
+							potionProjectile.delayedFire = true;
+						}
+						potionProjectile.velocityFactor = (float) config
+								.getDouble("Projectiles." + projectileName + ".VelocityFactor");
+						projectileMap.put(projectileName, potionProjectile);
+						break;
+
+					default:
+						continue;
 				}
 			} catch (Exception e) {
 				e.printStackTrace();

@@ -5,6 +5,8 @@ import java.util.List;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.block.Block;
+import org.bukkit.damage.DamageSource;
+import org.bukkit.damage.DamageType;
 import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -27,6 +29,7 @@ import com.github.alathra.siegeengines.util.SiegeEnginesUtil;
 
 public class SiegeEngineDamagedListener implements Listener {
 	@EventHandler(priority = EventPriority.HIGH)
+
 	public void onSiegeEngineHitByProjectile(ProjectileHitEvent event) {
 		if ((event.getEntity() instanceof Projectile)) {
 			for (Entity entity : event.getEntity().getNearbyEntities(2, 2, 2)) {
@@ -43,7 +46,8 @@ public class SiegeEngineDamagedListener implements Listener {
 						if (stand.getHealth()-2 > 0) {
 							stand.setHealth(stand.getHealth()-2);
 						} else {
-							EntityDeathEvent death = new EntityDeathEvent(stand,SiegeEnginesData.items,0);
+							var dmg_builder = DamageSource.builder(DamageType.ARROW);
+							EntityDeathEvent death = new EntityDeathEvent(stand, dmg_builder.build(), SiegeEnginesData.items, 0);
 							Bukkit.getServer().getPluginManager().callEvent(death);
 							if (!death.isCancelled()) stand.setHealth(0.0f);
 						}
@@ -66,7 +70,7 @@ public class SiegeEngineDamagedListener implements Listener {
 						+ String.format("%.2f", player.getLocation().distance(ball.getLocation())));
 			}
 			Location loc = snowball.getLocation();
-			Entity tnt = event.getEntity().getWorld().spawnEntity(loc, EntityType.PRIMED_TNT);
+			Entity tnt = event.getEntity().getWorld().spawnEntity(loc, EntityType.TNT);
 
 			SiegeEnginesData.projectiles.remove(event.getEntity().getUniqueId());
 
@@ -102,7 +106,8 @@ public class SiegeEngineDamagedListener implements Listener {
 			if (stand.getHealth()-2 > 0) {
 				stand.setHealth(stand.getHealth()-2);
 			} else {
-				EntityDeathEvent death = new EntityDeathEvent(stand,SiegeEnginesData.items,0);
+				var dmg_builder = DamageSource.builder(DamageType.GENERIC);
+				EntityDeathEvent death = new EntityDeathEvent(stand, dmg_builder.build(), SiegeEnginesData.items, 0);
 				Bukkit.getServer().getPluginManager().callEvent(death);
 				if (death.isCancelled()) return;
 				stand.setHealth(0.0f);

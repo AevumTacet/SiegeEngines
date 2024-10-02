@@ -21,7 +21,7 @@ public class PotionProjectile extends SiegeEngineProjectile {
     public Boolean delayedFire = false;
     public int delayTime = 6;
     public float inaccuracy = 0.1f;
-    public Particle particleType = Particle.EXPLOSION_LARGE;
+    public Particle particleType = Particle.EXPLOSION;
     public Sound soundType = Sound.ENTITY_GENERIC_EXPLODE;
     public float velocityFactor = 1.0f;
 
@@ -49,7 +49,7 @@ public class PotionProjectile extends SiegeEngineProjectile {
     private void CreateEntity(Entity entity, Location loc, Float velocity) {
         World world = entity.getLocation().getWorld();
 
-        Entity arrow = world.spawnEntity(loc, EntityType.SPLASH_POTION);
+        Entity arrow = world.spawnEntity(loc, EntityType.POTION);
         if (inaccuracy != 0f) {
             arrow.setVelocity(loc.getDirection().multiply(velocity).add(Randomise()).subtract(Randomise()));
         } else {

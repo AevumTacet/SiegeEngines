@@ -11,6 +11,7 @@ import com.github.alathra.siegeengines.command.CommandHandler;
 import com.github.alathra.siegeengines.config.Config;
 import com.github.alathra.siegeengines.data.SiegeEnginesData;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -56,10 +57,7 @@ public class SiegeEngines extends JavaPlugin {
 	@Override
 	public void onEnable() {
 		this.saveDefaultConfig();
-		Config.reload();
-		activeSiegeEngines.clear();
-		siegeEngineEntitiesPerPlayer.clear();
-		definedSiegeEngines.clear();
+		
 		getServer().getPluginManager().registerEvents(new PlayerHandler(), this);
 		getServer().getPluginManager().registerEvents(new SiegeEngineDamagedListener(), this);
 		getServer().getPluginManager().registerEvents(new SiegeEngineDeathListener(), this);
@@ -67,9 +65,7 @@ public class SiegeEngines extends JavaPlugin {
 		getServer().getPluginManager().registerEvents(new SiegeEngineInteractListener(), this);
 		getServer().getPluginManager().registerEvents(new SiegeEnginePlaceListener(), this);
 		getServer().getPluginManager().registerEvents(new SiegeEngineRotationListener(), this);
-		SiegeEnginesData.items.clear();
-		SiegeEnginesData.items.add(new ItemStack(Material.ARMOR_STAND));
-		addDefaults();
+		
 		if (Config.doDebug) {
 			for (SiegeEngine i : definedSiegeEngines.values()) {
 				SiegeEnginesLogger.info("Enabled Weapon : " + i.getEngineName());
@@ -79,6 +75,37 @@ public class SiegeEngines extends JavaPlugin {
 				}
 			}
 		}
+		if (getServer().getPluginManager().isPluginEnabled("Oraxen"))
+		{
+			System.err.println("Plugin Oraxen is enabled and ready.");
+			InitializeConfig();
+		}
+		else
+		{
+			System.err.println("Plugin Oraxen is not ready, attempting delayed load.");
+			Bukkit.getScheduler().runTaskLater(this,
+			new Runnable() {
+				@Override
+				public void run()
+				{
+					InitializeConfig();
+				}
+			}, 30);
+		}
+	}
+	
+	private void InitializeConfig() {
+		System.err.println("Is Oraxen plugin loaded: " + getServer().getPluginManager().isPluginEnabled("Oraxen"));
+		Config.reload();
+
+		activeSiegeEngines.clear();
+		siegeEngineEntitiesPerPlayer.clear();
+		definedSiegeEngines.clear();
+
+		SiegeEnginesData.items.clear();
+		SiegeEnginesData.items.add(new ItemStack(Material.ARMOR_STAND));
+		addDefaults();
+
 		commandHandler.onEnable();
 	}
 
@@ -217,7 +244,7 @@ public class SiegeEngines extends JavaPlugin {
 		breachCannon.setModelNumberToFireAt(142);
 		breachCannon.setFiringModelNumbers(new ArrayList<Integer>());
 		breachCannon.setRotateStandHead(true);
-		breachCannon.setRotateSideways(false);
+		breachCannon.setRotateSideways(true);
 		breachCannon.setMountable(Config.breachCannonCanMount);
 		definedSiegeEngines.put(breachCannon.getReadyModelNumber(), breachCannon);
 
