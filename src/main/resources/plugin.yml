@@ -1,0 +1,8 @@
+name: "SiegeEngines"
+main: "com.siegeengines.SiegeEngines"
+version: "{1.2}"
+api-version: "1.21.4"
+depend:
+  - Nexo
+libraries:
+  - org.apache.commons:commons-math3:3.6.1

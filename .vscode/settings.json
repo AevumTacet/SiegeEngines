@@ -1,0 +1,9 @@
+{
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.configuration.updateBuildConfiguration": "automatic",
+    "editor.wordBasedSuggestions": "off",
+    "yaml.schemas": {
+        "https://json.schemastore.org/paper-plugin.json": "file:///c%3A/Users/Aevum/SiegeEngines/SiegeEngines/src/main/resources/plugin.yml"
+    },
+    "maven.view": "hierarchical"
+}
