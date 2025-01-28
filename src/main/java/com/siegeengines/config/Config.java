@@ -272,7 +272,7 @@ public class Config {
 				String code = splits[0];
 				String id = splits[1];
 					
-				if (code.equalsIgnoreCase("ox"))
+				if (code.equalsIgnoreCase("Nexo"))
 				{
 					ItemStack customItem = NexoItems.itemFromId(id).build();
 					return customItem;
