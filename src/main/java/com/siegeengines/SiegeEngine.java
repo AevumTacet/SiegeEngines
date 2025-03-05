@@ -119,7 +119,7 @@ public class SiegeEngine implements Cloneable {
         //fuelItem = new ItemStack(Material.GUNPOWDER);
         setCycleThroughModelsWhileFiring(false);
         setSetModelNumberWhenFullyLoaded(false);
-        allowInvisibleStand = true;
+        allowInvisibleStand = false;
         setShotAmount(1);
         getAmmoHolder().setLoadedFuel(getMaxFuel());
         setEnabled(true);
@@ -128,7 +128,7 @@ public class SiegeEngine implements Cloneable {
         setRotateStandHead(true);
         hasFired = false;
         hasReloaded = false;
-        allowInvisibleStand = true;
+        allowInvisibleStand = false;
         hasBaseStand = false;
         baseStandOffset = 0;
         baseStandModelNumber = 147;
