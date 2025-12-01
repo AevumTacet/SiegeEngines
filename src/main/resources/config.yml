@@ -20,7 +20,7 @@ Debug: false
 
 # The item used to aim and fire siege engines
 # Must be a valid material. See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
-ControlItem: CLOCK
+ControlItem: SPYGLASS
 
 # The item used to only fire siege engines, an alternative to using the control item
 # Must be a valid material. See https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
@@ -225,3 +225,21 @@ SiegeEngines:
     Lore:
       - "&ePlace as a block to spawn a Breach Cannon"
     CanMount: false
+# ======================================
+# List of materials that cannot be destroyed by siege engine explosions
+IndestructibleMaterials:
+  - BEDROCK
+  - END_PORTAL_FRAME
+  - END_PORTAL
+  - NETHER_PORTAL
+  - BARRIER
+  - COMMAND_BLOCK
+  - CHAIN_COMMAND_BLOCK
+  - REPEATING_COMMAND_BLOCK
+  - STRUCTURE_BLOCK
+  - JIGSAW
+  - OBSIDIAN
+  - CRYING_OBSIDIAN
+  - ANCIENT_DEBRIS
+  - RESPAWN_ANCHOR
+  - END_GATEWAY

@@ -75,14 +75,14 @@ public class SiegeEngines extends JavaPlugin {
 				}
 			}
 		}
-		if (getServer().getPluginManager().isPluginEnabled("Oraxen"))
+		if (getServer().getPluginManager().isPluginEnabled("CraftEngine"))
 		{
-			System.err.println("Plugin Oraxen is enabled and ready.");
+			System.err.println("Plugin CraftEngine is enabled and ready.");
 			InitializeConfig();
 		}
 		else
 		{
-			System.err.println("Plugin Oraxen is not ready, attempting delayed load.");
+			System.err.println("Plugin CraftEngine is not ready, attempting delayed load.");
 			Bukkit.getScheduler().runTaskLater(this,
 			new Runnable() {
 				@Override
@@ -95,7 +95,7 @@ public class SiegeEngines extends JavaPlugin {
 	}
 	
 	private void InitializeConfig() {
-		System.err.println("Is Oraxen plugin loaded: " + getServer().getPluginManager().isPluginEnabled("Oraxen"));
+		System.err.println("Is CraftEngine plugin loaded: " + getServer().getPluginManager().isPluginEnabled("Oraxen"));
 		Config.reload();
 
 		activeSiegeEngines.clear();

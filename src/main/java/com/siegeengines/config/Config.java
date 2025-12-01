@@ -25,7 +25,8 @@ import com.siegeengines.projectile.PotionProjectile;
 import com.siegeengines.projectile.ProjectileType;
 import com.siegeengines.projectile.SiegeEngineProjectile;
 import com.siegeengines.util.SiegeEnginesUtil;
-import com.nexomc.nexo.api.NexoItems;
+import net.momirealms.craftengine.bukkit.item.BukkitItemManager;  
+import net.momirealms.craftengine.core.util.Key;  
 
 @SuppressWarnings("deprecation")
 public class Config {
@@ -35,7 +36,7 @@ public class Config {
 	// Universal Options - Defaults
 	public static int configVersion = 1;
 
-	public static Material controlItem = Material.CLOCK;
+	public static Material controlItem = Material.SPYGLASS;
 	public static Material fireItem = Material.FLINT;
 	public static double placementDensity = 2.5d;
 	public static int controlDistance = 10;
@@ -48,6 +49,8 @@ public class Config {
 
 
 	public static HashSet<World> disabledWorlds = new HashSet<>();
+	// Explosion settings
+	public static HashSet<Material> indestructibleMaterials = new HashSet<>();
 
 	// Siege Engine Options - Defaults
 	public static int trebuchetShotAmount = 1;
@@ -103,7 +106,7 @@ public class Config {
 		try {
 			controlItem = Material.getMaterial(config.getString("ControlItem"));
 		} catch (Exception e) {
-			controlItem = Material.CLOCK;
+			controlItem = Material.SPYGLASS;
 			SiegeEnginesLogger
 					.warn("Control item material could not be found, defaulting to " + controlItem.toString() + " !");
 		}
@@ -127,7 +130,22 @@ public class Config {
 
 		loadProjectilesConfig();
 		loadSiegeEngineConfig();
-
+		
+		// Load indestructible materials
+		indestructibleMaterials.clear();
+		List<String> indestructibleList = config.getStringList("IndestructibleMaterials");
+		for (String materialName : indestructibleList) {
+			try {
+				Material material = Material.getMaterial(materialName);
+				if (material != null) {
+					indestructibleMaterials.add(material);
+				} else {
+					SiegeEnginesLogger.warn("Material " + materialName + " in IndestructibleMaterials not found.");
+				}
+			} catch (Exception e) {
+				SiegeEnginesLogger.warn("Failed to load material " + materialName + " for IndestructibleMaterials.");
+			}
+		}
 	}
 
 	private static void loadTrebuchetValues() {
@@ -257,36 +275,32 @@ public class Config {
 		}
 	}
 
-	private static ItemStack getAmmoItem(String ammoType)
-	{
-		if (ammoType.isEmpty() || ammoType == null)
-		{
-			return null;
-		}
-		boolean has_prefix = ammoType.contains(":");
-		if (has_prefix)
-		{
-			String[] splits = ammoType.split(":");
-			if (splits.length == 2)
-			{
-				String code = splits[0];
-				String id = splits[1];
-					
-				if (code.equalsIgnoreCase("Nexo"))
-				{
-					ItemStack customItem = NexoItems.itemFromId(id).build();
-					return customItem;
-				}
-				// else if (code.equalsIgnoreCase("ia"))
-				// {
-				// 	// Logic for ItemsAdder
-				// }
-			}
-		}
-		// By default, search in minecraft IDs
-		ItemStack item = new ItemStack(Material.getMaterial(ammoType));
-		return item;
+	private static ItemStack getAmmoItem(String ammoType)  
+	{  
+		if (ammoType == null || ammoType.isEmpty())  
+		{  
+			return null;  
+		}  
+		
+		// Check if the item name contains ":" (namespace format)  
+		if (ammoType.contains(":"))  
+		{  
+			// Use CraftEngine for namespaced items (e.g., "regnum:explosive_charge")  
+			Key itemId = Key.of(ammoType);  
+			return BukkitItemManager.instance().buildItemStack(itemId, null);  
+		}  
+		else  
+		{  
+			// Use vanilla Minecraft for simple names (e.g., "arrow", "stone")  
+			Material material = Material.getMaterial(ammoType);  
+			return material != null ? new ItemStack(material) : null;  
+		}  
 	}
+
+	// 	// By default, search in minecraft IDs
+	// 	ItemStack item = new ItemStack(Material.getMaterial(ammoType));
+	// 	return item;
+	// }
 
 	private static void loadProjectilesConfig() {
 		projectileMap.clear();

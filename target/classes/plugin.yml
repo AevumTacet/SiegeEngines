@@ -1,8 +1,8 @@
 name: "SiegeEngines"
 main: "com.siegeengines.SiegeEngines"
 version: "{1.2}"
-api-version: "1.21.4"
+api-version: "1.21.8"
 depend:
-  - Nexo
+  - CraftEngine
 libraries:
   - org.apache.commons:commons-math3:3.6.1

@@ -2,7 +2,7 @@ package com.siegeengines.command;
 
 import com.siegeengines.SiegeEngine;
 import com.siegeengines.config.Config;
-import com.github.milkdrinkers.colorparser.ColorParser;
+//import com.github.milkdrinkers.colorparser.ColorParser;
 import dev.jorel.commandapi.CommandAPIBukkit;
 import dev.jorel.commandapi.CommandAPICommand;
 import dev.jorel.commandapi.arguments.ArgumentSuggestions;
@@ -10,6 +10,8 @@ import dev.jorel.commandapi.arguments.PlayerArgument;
 import dev.jorel.commandapi.arguments.StringArgument;
 import dev.jorel.commandapi.exceptions.WrapperCommandSyntaxException;
 import dev.jorel.commandapi.executors.CommandArguments;
+import io.github.milkdrinkers.colorparser.paper.ColorParser;
+
 import org.bukkit.Material;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
